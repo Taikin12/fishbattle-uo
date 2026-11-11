@@ -560,11 +560,9 @@ public final class BattleManager {
         Player b = Bukkit.getPlayer(session.playerB());
         if (a != null) {
             promptChoice(session, a);
-            seedPreview(a, session);
         }
         if (b != null) {
             promptChoice(session, b);
-            seedPreview(b, session);
         }
         broadcast(session, Component.text("1/2/3・チャットで選んで、右クリックかスニークで決定（10秒で自動確定）",
                 NamedTextColor.GRAY));
@@ -652,13 +650,6 @@ public final class BattleManager {
         setPreview(player, session, session.order().get(slot));
     }
 
-    private void seedPreview(Player player, BattleSession session) {
-        int held = player.getInventory().getHeldItemSlot();
-        if (held >= 0 && held < session.order().size()) {
-            setPreview(player, session, session.order().get(held));
-        }
-    }
-
     private void setPreview(Player player, BattleSession session, Rps hand) {
         session.setPreview(player.getUniqueId(), hand);
         effects.previewTitle(player, hand);
@@ -666,30 +657,29 @@ public final class BattleManager {
     }
 
     public boolean confirmSneak(Player player) {
-        BattleSession session = sessions.get(player.getUniqueId());
-        if (session == null || session.phase() != BattleSession.Phase.CHOOSING) {
-            return false;
-        }
-        Rps preview = session.previewOf(player.getUniqueId());
-        if (preview == null) {
-            return false;
-        }
-        choose(player, preview);
-        return true;
+        return confirm(player);
     }
 
     public boolean confirmPreview(Player player) {
+        return confirm(player);
+    }
+
+    private boolean confirm(Player player) {
         BattleSession session = sessions.get(player.getUniqueId());
         if (session == null || session.phase() != BattleSession.Phase.CHOOSING) {
             return false;
         }
-        Rps preview = session.previewOf(player.getUniqueId());
-        if (preview == null) {
-            player.sendActionBar(Component.text("1-3で手を選んでから右クリック（またはスニーク）で決定",
-                    NamedTextColor.YELLOW));
-            return true;
+        Rps hand = session.previewOf(player.getUniqueId());
+        if (hand == null) {
+            int held = player.getInventory().getHeldItemSlot();
+            if (held < 0 || held >= session.order().size()) {
+                player.sendActionBar(Component.text("1-3で手を選んでから右クリック（またはスニーク）で決定",
+                        NamedTextColor.YELLOW));
+                return true;
+            }
+            hand = session.order().get(held);
         }
-        choose(player, preview);
+        choose(player, hand);
         return true;
     }
 
