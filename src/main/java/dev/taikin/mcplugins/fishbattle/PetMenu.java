@@ -71,6 +71,7 @@ public final class PetMenu {
         Inventory top = player.getOpenInventory().getTopInventory();
         if (top.getHolder() instanceof Holder) {
             render(top, entity);
+            player.updateInventory();
         }
     }
 

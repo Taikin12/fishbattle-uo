@@ -34,6 +34,7 @@ public final class PetMenuListener implements Listener {
             return;
         }
         menu.handleClick(player, event.getRawSlot());
+        org.bukkit.Bukkit.getScheduler().runTask(plugin, () -> menu.refreshIfOpen(player));
     }
 
     @EventHandler(ignoreCancelled = true)
