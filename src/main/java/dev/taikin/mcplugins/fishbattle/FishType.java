@@ -54,10 +54,10 @@ public enum FishType {
 
     public double multiplier(FishType defender) {
         if (beats() == defender) {
-            return 2.0;
+            return 1.3;
         }
         if (defender.beats() == this) {
-            return 0.5;
+            return 0.75;
         }
         return 1.0;
     }

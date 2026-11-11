@@ -133,14 +133,14 @@ final class BattleHud {
                     + Math.round(session.charge(opponentId) * 100) + "%", NamedTextColor.RED);
         }
         String who = session.nameOf(opponentId);
-        return Component.text(who + "  " + opponent.displayName() + "  HP "
-                + opponent.hp() + "/" + opponent.maxHp(),
+        return Component.text(who + "  " + opponent.displayName() + "  Lv" + opponent.level()
+                + "  HP " + opponent.hp() + "/" + opponent.maxHp(),
                 opponent.hp() * 3 <= opponent.maxHp() ? NamedTextColor.DARK_RED : NamedTextColor.RED);
     }
 
     private static Component hpLabel(String prefix, Fish fish, NamedTextColor color) {
-        return Component.text(prefix + " " + fish.displayName() + "  HP "
-                + fish.hp() + "/" + fish.maxHp(), color);
+        return Component.text(prefix + " " + fish.displayName() + "  Lv" + fish.level()
+                + "  HP " + fish.hp() + "/" + fish.maxHp(), color);
     }
 
     private static float hpRatio(Fish fish) {
