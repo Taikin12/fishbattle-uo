@@ -73,14 +73,16 @@ public final class BattleListener implements Listener {
         battles.cyclePreview(event.getPlayer());
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(priority = org.bukkit.event.EventPriority.LOWEST)
     public void onInteract(PlayerInteractEvent event) {
-        if (event.getAction() != Action.RIGHT_CLICK_AIR
-                && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+        Action action = event.getAction();
+        if (action != Action.RIGHT_CLICK_AIR && action != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
         if (battles.confirmPreview(event.getPlayer())) {
             event.setCancelled(true);
+            event.setUseItemInHand(org.bukkit.event.Event.Result.DENY);
+            event.setUseInteractedBlock(org.bukkit.event.Event.Result.DENY);
         }
     }
 

@@ -45,8 +45,8 @@ public final class BattleManager {
 
     private final Plugin plugin;
     private final FishMotion motion;
-    private final EconomyHook economy;
     private final BattleEffects effects;
+    private final EconomyHook economy;
     private final BattlePets pets;
     private final Map<UUID, Challenge> challenges = new HashMap<>();
     private final Map<UUID, BattleSession> sessions = new HashMap<>();
@@ -650,11 +650,7 @@ public final class BattleManager {
 
     private void setPreview(Player player, BattleSession session, Rps hand) {
         session.setPreview(player.getUniqueId(), hand);
-        player.sendActionBar(Component.text()
-                .append(Component.text("選択中: ", NamedTextColor.GRAY))
-                .append(Component.text(hand.emoji() + hand.label(), hand.color()))
-                .append(Component.text("  右クリックで決定（10秒で自動確定）", NamedTextColor.DARK_GRAY))
-                .build());
+        effects.previewTitle(player, hand);
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 0.5f, 1.5f);
     }
 
