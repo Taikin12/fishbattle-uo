@@ -21,7 +21,7 @@ public final class FishCommand {
 
     private static final String PREFIX = "[魚] ";
     private static final double DEFAULT_STAKE = 100.0;
-    private static final List<String> TYPES = List.of("red", "green", "black", "white", "yellow", "blue");
+    private static final List<String> TYPES = List.of("blue", "red", "yellow");
 
     private final BattleManager battles;
     private final FishMotion motion;
@@ -120,7 +120,7 @@ public final class FishCommand {
                                         .executes(context -> give(context.getSource().getSender(),
                                                 StringArgumentType.getString(context, "player"),
                                                 StringArgumentType.getString(context, "type"), 5))
-                                        .then(Commands.argument("level", IntegerArgumentType.integer(1, 50))
+                                        .then(Commands.argument("level", IntegerArgumentType.integer(1, Fish.MAX_LEVEL))
                                                 .executes(context -> give(context.getSource().getSender(),
                                                         StringArgumentType.getString(context, "player"),
                                                         StringArgumentType.getString(context, "type"),

@@ -54,14 +54,16 @@ public record Fish(String id, FishType type, String speciesKey, int level, int e
         return new Fish(id, type, speciesKey, level, exp, Math.max(0, Math.min(newHp, maxHp())), nick, techniques);
     }
 
+    public static final int MAX_LEVEL = 10;
+
     public Fish gainExp(int amount) {
         int newLevel = level;
         int newExp = exp + amount;
-        while (newLevel < 50 && newExp >= newLevel * 20) {
+        while (newLevel < MAX_LEVEL && newExp >= newLevel * 20) {
             newExp -= newLevel * 20;
             newLevel++;
         }
-        if (newLevel >= 50) {
+        if (newLevel >= MAX_LEVEL) {
             newExp = 0;
         }
         int newHp = newLevel > level ? maxHp(species(), newLevel) : hp;
