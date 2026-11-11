@@ -223,6 +223,7 @@ public final class BattleManager {
         }
 
         broadcast(session, Component.text("バトル開始！", NamedTextColor.GOLD));
+        effects.battleStart(session);
         startMeters(session, from, to);
         beginRound(session, 1);
     }
@@ -313,6 +314,7 @@ public final class BattleManager {
         sessions.put(player.getUniqueId(), session);
         sessions.put(npcId, session);
 
+        effects.battleStart(session);
         broadcast(session, Component.text("デモバトル開始！ 相手は NPC の "
                 + npcFish.displayName() + " [" + npcFish.type().label() + "]", NamedTextColor.GOLD));
         startMeters(session, player, null);
@@ -990,6 +992,9 @@ public final class BattleManager {
             session.setFish(loserId, restored);
             pets.write(session, loserId, restored);
             loser.sendMessage(Component.text("バトルに負けた…", NamedTextColor.GRAY));
+        }
+        if (winner != null && loser != null) {
+            effects.battleEnd(session, winner, loser);
         }
         if (session.stake() > 0 && winner != null) {
             double payout = session.stake() * 2;

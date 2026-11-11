@@ -20,6 +20,38 @@ final class BattleEffects {
         this.plugin = plugin;
     }
 
+    void battleStart(BattleSession session) {
+        for (java.util.UUID id : new java.util.UUID[] {session.playerA(), session.playerB()}) {
+            Player player = Bukkit.getPlayer(id);
+            if (player == null) {
+                continue;
+            }
+            player.playSound(player.getLocation(), Sound.ITEM_GOAT_HORN_SOUND_1, 1.0f, 1.0f);
+            player.playSound(player.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 0.7f, 1.4f);
+        }
+    }
+
+    void battleEnd(BattleSession session, Player winner, Player loser) {
+        if (winner != null) {
+            winner.playSound(winner.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.0f);
+            winner.playSound(winner.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 1.0f, 1.0f);
+            winner.playSound(winner.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.8f, 1.3f);
+        }
+        if (loser != null) {
+            loser.playSound(loser.getLocation(), Sound.ENTITY_ENDER_DRAGON_DEATH, 0.35f, 1.6f);
+            loser.playSound(loser.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.9f, 0.6f);
+        }
+    }
+
+    void draw(BattleSession session) {
+        for (java.util.UUID id : new java.util.UUID[] {session.playerA(), session.playerB()}) {
+            Player player = Bukkit.getPlayer(id);
+            if (player != null) {
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1.0f, 1.0f);
+            }
+        }
+    }
+
     void duelTitle(Player player, Component title, Component subtitle) {
         if (player == null) {
             return;
