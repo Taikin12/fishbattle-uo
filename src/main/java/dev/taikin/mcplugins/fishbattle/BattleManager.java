@@ -560,11 +560,13 @@ public final class BattleManager {
         Player b = Bukkit.getPlayer(session.playerB());
         if (a != null) {
             promptChoice(session, a);
+            seedPreview(a, session);
         }
         if (b != null) {
             promptChoice(session, b);
+            seedPreview(b, session);
         }
-        broadcast(session, Component.text("1/2/3・Fキー・チャットで選んで、右クリックで決定（10秒で自動確定）",
+        broadcast(session, Component.text("1/2/3・チャットで選んで、右クリックかスニークで決定（10秒で自動確定）",
                 NamedTextColor.GRAY));
         if (session.choiceTask() != null) {
             session.choiceTask().cancel();
@@ -612,7 +614,7 @@ public final class BattleManager {
     }
 
     private void promptChoice(BattleSession session, Player player) {
-        player.sendActionBar(Component.text("1/2/3・F・チャットで選んで右クリック", NamedTextColor.GOLD));
+        player.sendActionBar(Component.text("1/2/3・チャットで選んで右クリックかスニーク", NamedTextColor.GOLD));
         TextComponent.Builder builder = Component.text();
         boolean first = true;
         for (Rps rps : session.order()) {
@@ -650,21 +652,30 @@ public final class BattleManager {
         setPreview(player, session, session.order().get(slot));
     }
 
+    private void seedPreview(Player player, BattleSession session) {
+        int held = player.getInventory().getHeldItemSlot();
+        if (held >= 0 && held < session.order().size()) {
+            setPreview(player, session, session.order().get(held));
+        }
+    }
+
     private void setPreview(Player player, BattleSession session, Rps hand) {
         session.setPreview(player.getUniqueId(), hand);
         effects.previewTitle(player, hand);
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 0.5f, 1.5f);
     }
 
-    public void cyclePreview(Player player) {
+    public boolean confirmSneak(Player player) {
         BattleSession session = sessions.get(player.getUniqueId());
         if (session == null || session.phase() != BattleSession.Phase.CHOOSING) {
-            return;
+            return false;
         }
-        List<Rps> order = session.order();
-        Rps current = session.previewOf(player.getUniqueId());
-        Rps next = current == null ? order.get(0) : order.get((order.indexOf(current) + 1) % order.size());
-        setPreview(player, session, next);
+        Rps preview = session.previewOf(player.getUniqueId());
+        if (preview == null) {
+            return false;
+        }
+        choose(player, preview);
+        return true;
     }
 
     public boolean confirmPreview(Player player) {
@@ -674,7 +685,7 @@ public final class BattleManager {
         }
         Rps preview = session.previewOf(player.getUniqueId());
         if (preview == null) {
-            player.sendActionBar(Component.text("Fキーまたは1-3で手を選んでから右クリックで決定",
+            player.sendActionBar(Component.text("1-3で手を選んでから右クリック（またはスニーク）で決定",
                     NamedTextColor.YELLOW));
             return true;
         }
