@@ -1,0 +1,20 @@
+name: uo
+version: '${version}'
+main: dev.taikin.mcplugins.fishbattle.FishBattlePlugin
+api-version: '1.21'
+authors: [ taikin ]
+description: Bucket fish and axolotls with color-based types, then battle 1v1 (/uo).
+
+dependencies:
+  server:
+    Vault:
+      load: BEFORE
+      required: false
+
+permissions:
+  uobattle.use:
+    description: Battle with bucket fish
+    default: true
+  uobattle.admin:
+    description: Give fish and manage battles
+    default: op
