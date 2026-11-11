@@ -304,7 +304,7 @@ public final class BattleSession {
 
     private static double gain(double current) {
         double remaining = Math.max(0.0, 1.0 - current);
-        double next = current + 0.40 * remaining * remaining;
+        double next = current + 0.28 * remaining * remaining;
         return Math.min(1.0, next);
     }
 
