@@ -6,8 +6,6 @@ import java.util.Set;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.entity.Axolotl;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -188,10 +186,7 @@ public final class FishMotion {
                 next.setYaw(org.bukkit.Location.normalizeYaw(owner.getLocation().getYaw() + 180f));
                 next.setPitch(0f);
                 if (next.getBlock().isPassable()) {
-                    boolean moving = move(entity, current, next);
-                    if (moving) {
-                        splash(entity);
-                    }
+                    move(entity, current, next);
                 }
                 continue;
             }
@@ -209,10 +204,7 @@ public final class FishMotion {
                     ay + bob,
                     az + Math.cos(t * 0.9) * 0.35,
                     current.getYaw(), current.getPitch());
-            boolean moving = move(entity, current, target);
-            if (moving && tick % 4 == 0) {
-                splash(entity);
-            }
+            move(entity, current, target);
         }
     }
 
@@ -243,20 +235,6 @@ public final class FishMotion {
         entity.setVelocity(steered);
         entity.setRotation(next.getYaw(), next.getPitch());
         return true;
-    }
-
-    private void splash(Entity entity) {
-        Location location = entity.getLocation();
-        var world = location.getWorld();
-        if (world == null) {
-            return;
-        }
-        world.spawnParticle(Particle.BUBBLE, location.clone().add(0, 0.3, 0),
-                3, 0.15, 0.1, 0.15, 0.01);
-        if (tick % 8 == 0) {
-            world.spawnParticle(Particle.SPLASH, location, 2, 0.2, 0.1, 0.2, 0.0);
-            world.playSound(location, Sound.ENTITY_FISH_SWIM, 0.35f, 1.4f);
-        }
     }
 
     private static Location followTarget(Player owner, double bob) {
