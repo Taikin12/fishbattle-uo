@@ -216,10 +216,11 @@ public final class BattleManager {
         var toB = fB.toVector().subtract(fA.toVector()).setY(0);
         var toA = fA.toVector().subtract(fB.toVector()).setY(0);
         if (toB.lengthSquared() > 1.0E-6) {
-            pets.place(petA, fA.clone().add(toB.clone().normalize().multiply(1.8))
-                    .add(0, 1.1, 0), toB);
-            pets.place(petB, fB.clone().add(toA.clone().normalize().multiply(1.8))
-                    .add(0, 1.1, 0), toA);
+            var unit = toB.clone().normalize();
+            var mid = fA.clone().add(toB.clone().multiply(0.5));
+            pets.place(petA, mid.clone().add(unit.clone().multiply(-0.5)).add(0, 1.1, 0), unit);
+            pets.place(petB, mid.clone().add(unit.clone().multiply(0.5)).add(0, 1.1, 0),
+                    unit.clone().multiply(-1));
         }
 
         broadcast(session, Component.text("バトル開始！", NamedTextColor.GOLD));
@@ -275,9 +276,9 @@ public final class BattleManager {
         var base = location.clone().add(0, 1.1, 0);
 
         pets.freeze(session, player.getUniqueId(), pet);
-        pets.place(pet, base.clone().add(direction.clone().multiply(1.8)), direction);
+        pets.place(pet, base.clone().add(direction.clone().multiply(2.0)), direction);
         var npcFishEntity = CaptureListener.spawnFor(npcFish, base.clone()
-                .add(direction.clone().multiply(3.4)));
+                .add(direction.clone().multiply(3.0)));
         if (npcFishEntity != null) {
             npcFishEntity.setRotation(location.getYaw() + 180f, 0f);
         }
