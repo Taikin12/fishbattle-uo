@@ -86,10 +86,23 @@ public final class CaptureListener implements Listener {
         }
         String ownerId = entity.getPersistentDataContainer().get(FishKeys.OWNER, PersistentDataType.STRING);
         if (ownerId != null && !ownerId.equals(player.getUniqueId().toString())) {
-            player.sendMessage(Component.text("飼い主だけが回収できます。", NamedTextColor.YELLOW));
+            player.sendMessage(Component.text("飼い主だけが回収できます。飼い主は "
+                    + ownerName(ownerId) + " です。", NamedTextColor.YELLOW));
             return;
         }
         collect(player, entity, motion);
+    }
+
+    static String ownerName(String ownerId) {
+        try {
+            var offline = org.bukkit.Bukkit.getOfflinePlayer(java.util.UUID.fromString(ownerId));
+            String name = offline.getName();
+            if (name != null && !name.isBlank()) {
+                return name;
+            }
+        } catch (IllegalArgumentException ignored) {
+        }
+        return "不明";
     }
 
     static void collect(Player player, Entity entity, FishMotion motion) {
