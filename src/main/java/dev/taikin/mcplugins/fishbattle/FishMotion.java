@@ -218,7 +218,7 @@ public final class FishMotion {
     private static Location followTarget(Player owner, double bob) {
         Location base = owner.getLocation();
         Location target = base.clone();
-        target.setY(base.getY() + 1.62 + bob);
+        target.setY(base.getY() + 1.15 + bob);
         return target;
     }
 
