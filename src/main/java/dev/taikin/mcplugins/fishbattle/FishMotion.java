@@ -19,9 +19,9 @@ public final class FishMotion {
 
     private static final double TELEPORT_RANGE = 16.0;
     private static final double STOP_RANGE = 2.0;
-    private static final double BASE_SPEED = 0.14;
-    private static final double SPEED_GAIN = 0.16;
-    private static final double MAX_SPEED = 1.10;
+    private static final double BASE_SPEED = 0.14 / 3.0;
+    private static final double SPEED_GAIN = 0.16 / 3.0;
+    private static final double MAX_SPEED = 1.10 / 3.0;
 
     private final Plugin plugin;
     private final Set<UUID> tracked = new HashSet<>();
@@ -33,7 +33,7 @@ public final class FishMotion {
     }
 
     public void start() {
-        this.task = Bukkit.getScheduler().runTaskTimer(plugin, this::step, 20L, 3L);
+        this.task = Bukkit.getScheduler().runTaskTimer(plugin, this::step, 20L, 1L);
     }
 
     public void stop() {
@@ -160,7 +160,7 @@ public final class FishMotion {
             }
             configure(entity);
             double phase = (id.hashCode() & 0xFF) / 255.0 * Math.PI * 2.0;
-            double t = tick * 0.16 + phase;
+            double t = tick * 0.053 + phase;
             double bob = Math.sin(t * 1.3) * 0.10;
 
             Player owner = ownerOf(entity);
@@ -186,7 +186,7 @@ public final class FishMotion {
                 next.setYaw(org.bukkit.Location.normalizeYaw(owner.getLocation().getYaw() + 180f));
                 next.setPitch(0f);
                 if (next.getBlock().isPassable()) {
-                    entity.teleport(next);
+                    move(entity, current, next);
                 }
                 continue;
             }
@@ -204,7 +204,14 @@ public final class FishMotion {
                     ay + bob,
                     az + Math.cos(t * 0.9) * 0.35,
                     current.getYaw(), current.getPitch());
-            entity.teleport(target);
+            move(entity, current, target);
+        }
+    }
+
+    private static void move(Entity entity, Location current, Location next) {
+        if (current.getWorld() != next.getWorld()
+                || current.distanceSquared(next) > 1.0E-7) {
+            entity.teleport(next);
         }
     }
 
