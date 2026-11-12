@@ -652,6 +652,12 @@ public final class BattleManager {
     }
 
     private void setPreview(Player player, BattleSession session, Rps hand) {
+        if (session.choiceOf(player.getUniqueId()) != null) {
+            return;
+        }
+        if (session.phase() != BattleSession.Phase.CHOOSING) {
+            return;
+        }
         session.setPreview(player.getUniqueId(), hand);
         effects.previewTitle(player, hand);
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 0.5f, 1.5f);
