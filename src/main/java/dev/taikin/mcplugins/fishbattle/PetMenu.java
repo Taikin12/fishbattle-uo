@@ -35,12 +35,13 @@ public final class PetMenu {
     public static final int SLOT_REMOVE = 26;
 
     private final FishMotion motion;
+    private final RenameDialog renameDialog;
     private final Map<UUID, UUID> lastPet = new HashMap<>();
     private final Map<UUID, UUID> openMenus = new HashMap<>();
-    private final Map<UUID, Long> renameWaiting = new HashMap<>();
 
     public PetMenu(FishMotion motion) {
         this.motion = motion;
+        this.renameDialog = new RenameDialog(motion);
     }
 
     public void open(Player player, Entity entity) {
@@ -219,10 +220,8 @@ public final class PetMenu {
                     net.kyori.adventure.text.Component.text("属性は捕獲時に決まり変更できません",
                             NamedTextColor.GRAY));
             case SLOT_RENAME -> {
-                renameWaiting.put(player.getUniqueId(), System.currentTimeMillis());
                 player.closeInventory();
-                player.sendMessage(Component.text("新しい名前をチャットに入力してください（cancel で中止）。",
-                        NamedTextColor.GREEN));
+                renameDialog.open(player, entity);
             }
             case SLOT_FOLLOW -> {
                 boolean follow = motion.toggleFollow(entity);
@@ -252,35 +251,17 @@ public final class PetMenu {
         }
     }
 
-    public boolean isWaitingForRename(Player player) {
-        Long at = renameWaiting.get(player.getUniqueId());
-        return at != null && System.currentTimeMillis() - at < 120_000L;
-    }
-
-    public void completeRename(Player player, String name) {
-        renameWaiting.remove(player.getUniqueId());
-        Entity entity = entityOf(player);
+    public void rename(Player player, String name) {
+        Entity entity = petOf(player);
         if (entity == null) {
-            player.sendMessage(Component.text("魚が見つかりません。", NamedTextColor.RED));
+            player.sendMessage(Component.text("先に魚を右クリックして選んでください。", NamedTextColor.RED));
             return;
         }
-        String cleaned = name.trim();
-        if (cleaned.length() > 24) {
-            cleaned = cleaned.substring(0, 24);
-        }
-        entity.getPersistentDataContainer().set(FishKeys.NICK, PersistentDataType.STRING, cleaned);
-        entity.customName(FishItems.name(FishData.read(entity)));
-        entity.setCustomNameVisible(true);
-        player.sendMessage(Component.text("名前を「" + cleaned + "」にしました。", NamedTextColor.GREEN));
-    }
-
-    public void cancelRename(Player player) {
-        renameWaiting.remove(player.getUniqueId());
+        renameDialog.apply(player, entity, name);
     }
 
     public void close(Player player) {
         openMenus.remove(player.getUniqueId());
-        renameWaiting.remove(player.getUniqueId());
     }
 
     public void closeMenuOnly(Player player) {
@@ -403,10 +384,6 @@ public final class PetMenu {
         entity.remove();
         close(player);
         player.sendMessage(Component.text("魚を消しました。", NamedTextColor.GRAY));
-    }
-
-    public void rename(Player player, String name) {
-        completeRename(player, name);
     }
 
     private Entity entityOf(Player player) {
