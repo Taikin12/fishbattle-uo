@@ -95,6 +95,13 @@ public final class FishCommand {
                                 .then(Commands.argument("slot", IntegerArgumentType.integer(1, 3))
                                         .executes(context -> petUntrain(context.getSource().getSender(),
                                                 IntegerArgumentType.getInteger(context, "slot"))))))
+                .then(Commands.literal("bucket")
+                        .executes(context -> bucket(context.getSource().getSender(), null))
+                        .then(Commands.argument("player", StringArgumentType.word())
+                                .requires(source -> source.getSender().hasPermission("uobattle.admin"))
+                                .suggests(this::suggestPlayers)
+                                .executes(context -> bucket(context.getSource().getSender(),
+                                        StringArgumentType.getString(context, "player")))))
                 .then(Commands.literal("card")
                         .requires(source -> source.getSender().hasPermission("uobattle.admin"))
                         .then(Commands.argument("player", StringArgumentType.word())
@@ -234,6 +241,7 @@ public final class FishCommand {
         sender.sendMessage(Component.text("/uo run              降参", NamedTextColor.GRAY));
         sender.sendMessage(Component.text("/uo info            個体情報", NamedTextColor.GRAY));
         sender.sendMessage(Component.text("/uo pet train       装備中の技を確認・外す", NamedTextColor.GRAY));
+        sender.sendMessage(Component.text("/uo bucket [player]  捕獲バケツを入手", NamedTextColor.GRAY));
         sender.sendMessage(Component.text("/uo card <player> [技]  技カードを配布（管理者）", NamedTextColor.GRAY));
         sender.sendMessage(Component.text("/uo clear [all]      出した魚を消す（all は管理者）", NamedTextColor.GRAY));
         return 1;
@@ -310,6 +318,37 @@ public final class FishCommand {
             return 0;
         }
         menu.untrain(player, slot);
+        return 1;
+    }
+
+    private int bucket(org.bukkit.command.CommandSender sender, String targetName) {
+        Player target;
+        if (targetName == null) {
+            if (!(sender instanceof Player player)) {
+                sender.sendMessage(Component.text("コンソールからは /uo bucket <player> を使ってください。",
+                        NamedTextColor.RED));
+                return 0;
+            }
+            target = player;
+        } else {
+            target = Bukkit.getPlayerExact(targetName);
+            if (target == null) {
+                sender.sendMessage(Component.text(PREFIX + targetName + " はオンラインではありません。",
+                        NamedTextColor.RED));
+                return 0;
+            }
+        }
+        var leftovers = target.getInventory().addItem(FishItems.captureBucket());
+        if (!leftovers.isEmpty()) {
+            sender.sendMessage(Component.text(PREFIX + target.getName()
+                    + " のインベントリに空きがありません。", NamedTextColor.RED));
+            return 0;
+        }
+        target.sendMessage(Component.text(PREFIX + "捕獲バケツを受け取りました。", NamedTextColor.GREEN));
+        if (!target.equals(sender)) {
+            sender.sendMessage(Component.text(PREFIX + target.getName() + " に捕獲バケツを渡しました。",
+                    NamedTextColor.GREEN));
+        }
         return 1;
     }
 

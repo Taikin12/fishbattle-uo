@@ -88,6 +88,7 @@
 - `/uo mash`: 攻撃時に連打する
 - `/uo run`: 降参
 - `/uo heal`: 手持ちの魚を全回復
+- `/uo bucket [player]`: 捕獲バケツを入手（player指定は管理者）
 - `/uo give <player> <type> [level]`: 指定属性の魚を配布（管理者）
 - 権限: `uobattle.use`（既定は全員）、`uobattle.admin`（既定は OP）
 
