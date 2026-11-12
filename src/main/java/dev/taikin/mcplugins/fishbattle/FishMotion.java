@@ -208,33 +208,11 @@ public final class FishMotion {
         }
     }
 
-    private static boolean move(Entity entity, Location current, Location next) {
-        if (current.getWorld() != next.getWorld()) {
+    private static void move(Entity entity, Location current, Location next) {
+        if (current.getWorld() != next.getWorld()
+                || current.distanceSquared(next) > 1.0E-7) {
             entity.teleport(next);
-            entity.setVelocity(new Vector());
-            return false;
         }
-        double distanceSquared = current.distanceSquared(next);
-        if (distanceSquared > 4.0) {
-            entity.teleport(next);
-            entity.setVelocity(new Vector());
-            return false;
-        }
-        if (distanceSquared <= 1.0E-7) {
-            if (!entity.getVelocity().isZero()) {
-                entity.setVelocity(new Vector());
-            }
-            return false;
-        }
-        Vector desired = next.toVector().subtract(current.toVector());
-        Vector velocity = entity.getVelocity();
-        Vector steered = velocity.clone().multiply(0.55).add(desired.multiply(0.6));
-        if (steered.lengthSquared() > desired.lengthSquared() * 4.0) {
-            steered = desired.clone().multiply(2.0);
-        }
-        entity.setVelocity(steered);
-        entity.setRotation(next.getYaw(), next.getPitch());
-        return true;
     }
 
     private static Location followTarget(Player owner, double bob) {
