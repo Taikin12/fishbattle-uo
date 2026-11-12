@@ -38,8 +38,8 @@ final class BattleEffects {
             winner.playSound(winner.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.8f, 1.3f);
         }
         if (loser != null) {
-            loser.playSound(loser.getLocation(), Sound.ENTITY_ENDER_DRAGON_DEATH, 0.35f, 1.6f);
-            loser.playSound(loser.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.9f, 0.6f);
+            loser.playSound(loser.getLocation(), Sound.ENTITY_VILLAGER_DEATH, 0.45f, 1.3f);
+            loser.playSound(loser.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.8f, 0.7f);
         }
     }
 
