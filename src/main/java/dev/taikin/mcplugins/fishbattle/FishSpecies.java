@@ -45,6 +45,37 @@ public record FishSpecies(String key, String name, int hp, int power, int techni
                 new FishSpecies("axolotl:" + variant.name(), name, hp, power, technique));
     }
 
+    public static java.util.List<String> allKeys() {
+        return new java.util.ArrayList<>(REGISTRY.keySet());
+    }
+
+    public static java.util.List<String> allIds() {
+        java.util.List<String> ids = new java.util.ArrayList<>();
+        for (String key : REGISTRY.keySet()) {
+            ids.add(shortId(key));
+        }
+        return ids;
+    }
+
+    public static String shortId(String key) {
+        int colon = key.indexOf(':');
+        return colon >= 0 ? key.substring(colon + 1).toLowerCase(java.util.Locale.ROOT)
+                : key.toLowerCase(java.util.Locale.ROOT);
+    }
+
+    public static String resolve(String name) {
+        String wanted = name.toLowerCase(java.util.Locale.ROOT);
+        for (String key : REGISTRY.keySet()) {
+            if (key.equalsIgnoreCase(wanted) || shortId(key).equals(wanted)) {
+                return key;
+            }
+            if (REGISTRY.get(key).name().equals(name)) {
+                return key;
+            }
+        }
+        return null;
+    }
+
     public static FishSpecies byKey(String key) {
         FishSpecies species = REGISTRY.get(key);
         return species != null ? species : REGISTRY.get("tropical:KOB");

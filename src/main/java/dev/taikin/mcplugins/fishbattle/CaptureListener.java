@@ -363,26 +363,20 @@ public final class CaptureListener implements Listener {
             return existing;
         }
         String speciesKey;
-        FishType type;
         if (entity instanceof TropicalFish tropical) {
             speciesKey = FishSpecies.keyOf(tropical.getPattern());
-            type = FishType.random();
         } else if (entity instanceof Axolotl axolotl) {
             speciesKey = FishSpecies.keyOf(axolotl.getVariant());
-            type = FishType.random();
         } else if (entity instanceof Cod) {
             speciesKey = "cod";
-            type = FishType.BLUE;
         } else if (entity instanceof Salmon) {
             speciesKey = "salmon";
-            type = FishType.RED;
         } else if (entity instanceof Tadpole) {
             speciesKey = "tadpole";
-            type = FishType.BLUE;
         } else {
             speciesKey = "pufferfish";
-            type = FishType.YELLOW;
         }
+        FishType type = FishType.random();
         int level = ThreadLocalRandom.current().nextInt(2, 6);
         return new Fish(UUID.randomUUID().toString(), type, speciesKey, level, 0,
                 Fish.maxHp(FishSpecies.byKey(speciesKey), level), "", List.of());

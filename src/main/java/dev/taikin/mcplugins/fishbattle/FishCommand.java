@@ -21,7 +21,7 @@ public final class FishCommand {
 
     private static final String PREFIX = "[魚] ";
     private static final double DEFAULT_STAKE = 100.0;
-    private static final List<String> TYPES = List.of("blue", "red", "yellow");
+
 
     private final BattleManager battles;
     private final FishMotion motion;
@@ -95,6 +95,8 @@ public final class FishCommand {
                                 .then(Commands.argument("slot", IntegerArgumentType.integer(1, 3))
                                         .executes(context -> petUntrain(context.getSource().getSender(),
                                                 IntegerArgumentType.getInteger(context, "slot"))))))
+                .then(Commands.literal("species")
+                        .executes(context -> species(context.getSource().getSender())))
                 .then(Commands.literal("bucket")
                         .executes(context -> bucket(context.getSource().getSender(), null))
                         .then(Commands.argument("player", StringArgumentType.word())
@@ -122,15 +124,15 @@ public final class FishCommand {
                         .requires(source -> source.getSender().hasPermission("uobattle.admin"))
                         .then(Commands.argument("player", StringArgumentType.word())
                                 .suggests(this::suggestPlayers)
-                                .then(Commands.argument("type", StringArgumentType.word())
-                                        .suggests(this::suggestTypes)
+                                .then(Commands.argument("species", StringArgumentType.word())
+                                        .suggests(this::suggestSpecies)
                                         .executes(context -> give(context.getSource().getSender(),
                                                 StringArgumentType.getString(context, "player"),
-                                                StringArgumentType.getString(context, "type"), 5))
+                                                StringArgumentType.getString(context, "species"), 5))
                                         .then(Commands.argument("level", IntegerArgumentType.integer(1, Fish.MAX_LEVEL))
                                                 .executes(context -> give(context.getSource().getSender(),
                                                         StringArgumentType.getString(context, "player"),
-                                                        StringArgumentType.getString(context, "type"),
+                                                        StringArgumentType.getString(context, "species"),
                                                         IntegerArgumentType.getInteger(context, "level")))))))
                 .build();
     }
@@ -319,6 +321,17 @@ public final class FishCommand {
         return 1;
     }
 
+    private int species(org.bukkit.command.CommandSender sender) {
+        sender.sendMessage(Component.text(PREFIX + "魚の種類", NamedTextColor.AQUA));
+        for (String key : FishSpecies.allKeys()) {
+            FishSpecies fish = FishSpecies.byKey(key);
+            sender.sendMessage(Component.text("  " + FishSpecies.shortId(key) + " — " + fish.name()
+                    + "（強さ" + fish.power() + " 体力" + fish.hp() + " テク" + fish.technique() + "）",
+                    NamedTextColor.GRAY));
+        }
+        return 1;
+    }
+
     private int bucket(org.bukkit.command.CommandSender sender, String targetName) {
         Player target;
         if (targetName == null) {
@@ -408,25 +421,23 @@ public final class FishCommand {
         return removed;
     }
 
-    private int give(org.bukkit.command.CommandSender sender, String targetName, String typeName, int level) {
+    private int give(org.bukkit.command.CommandSender sender, String targetName, String speciesName, int level) {
         Player target = Bukkit.getPlayerExact(targetName);
         if (target == null) {
             sender.sendMessage(Component.text(PREFIX + targetName + " はオンラインではありません。", NamedTextColor.RED));
             return 0;
         }
-        FishType type;
-        try {
-            type = FishType.valueOf(typeName.toUpperCase(Locale.ROOT));
-        } catch (IllegalArgumentException e) {
-            sender.sendMessage(Component.text(PREFIX + "タイプは " + String.join(", ", TYPES) + " のいずれかです。",
+        String key = FishSpecies.resolve(speciesName);
+        if (key == null) {
+            sender.sendMessage(Component.text(PREFIX + "その魚はいません。/uo species で一覧を確認してください。",
                     NamedTextColor.RED));
             return 0;
         }
-        ItemStack fish = FishItems.randomBucket(type, level);
+        ItemStack fish = FishItems.speciesBucket(key, level);
         target.getInventory().addItem(fish);
         target.sendMessage(Component.text(PREFIX + "魚を受け取りました。", NamedTextColor.GREEN));
-        sender.sendMessage(Component.text(PREFIX + target.getName() + " に " + type.label() + " 属性 Lv" + level
-                + " の魚を渡しました。", NamedTextColor.GREEN));
+        sender.sendMessage(Component.text(PREFIX + target.getName() + " に "
+                + FishSpecies.byKey(key).name() + " Lv" + level + " を渡しました。", NamedTextColor.GREEN));
         return 1;
     }
 
@@ -441,12 +452,12 @@ public final class FishCommand {
         return builder.buildFuture();
     }
 
-    private CompletableFuture<Suggestions> suggestTypes(CommandContext<CommandSourceStack> context,
+    private CompletableFuture<Suggestions> suggestSpecies(CommandContext<CommandSourceStack> context,
             SuggestionsBuilder builder) {
         String remaining = builder.getRemainingLowerCase();
-        for (String type : TYPES) {
-            if (type.startsWith(remaining)) {
-                builder.suggest(type);
+        for (String id : FishSpecies.allIds()) {
+            if (id.startsWith(remaining)) {
+                builder.suggest(id);
             }
         }
         return builder.buildFuture();

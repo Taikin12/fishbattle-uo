@@ -123,23 +123,17 @@ public final class FishItems {
     }
 
     public static ItemStack randomBucket(FishType type, int level) {
-        String[] keys = switch (type) {
-            case RED -> new String[] {"salmon",
-                    FishSpecies.keyOf(TropicalFish.Pattern.KOB),
-                    FishSpecies.keyOf(TropicalFish.Pattern.BETTY),
-                    FishSpecies.keyOf(Axolotl.Variant.LUCY)};
-            case YELLOW -> new String[] {"pufferfish",
-                    FishSpecies.keyOf(TropicalFish.Pattern.SUNSTREAK),
-                    FishSpecies.keyOf(TropicalFish.Pattern.DASHER),
-                    FishSpecies.keyOf(Axolotl.Variant.GOLD)};
-            case BLUE -> new String[] {"cod", "tadpole",
-                    FishSpecies.keyOf(TropicalFish.Pattern.FLOPPER),
-                    FishSpecies.keyOf(TropicalFish.Pattern.STRIPEY),
-                    FishSpecies.keyOf(Axolotl.Variant.BLUE)};
-        };
-        String key = keys[ThreadLocalRandom.current().nextInt(keys.length)];
+        java.util.List<String> keys = FishSpecies.allKeys();
+        String key = keys.get(ThreadLocalRandom.current().nextInt(keys.size()));
         FishSpecies species = FishSpecies.byKey(key);
         Fish fish = new Fish(java.util.UUID.randomUUID().toString(), type, key, level, 0,
+                Fish.maxHp(species, level), "", java.util.List.of());
+        return bucketFor(fish);
+    }
+
+    public static ItemStack speciesBucket(String speciesKey, int level) {
+        FishSpecies species = FishSpecies.byKey(speciesKey);
+        Fish fish = new Fish(java.util.UUID.randomUUID().toString(), FishType.random(), speciesKey, level, 0,
                 Fish.maxHp(species, level), "", java.util.List.of());
         return bucketFor(fish);
     }
