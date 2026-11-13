@@ -161,23 +161,11 @@ public final class CaptureListener implements Listener {
                 return;
             }
         }
-        if (!FishItems.isCaptureBucket(item)) {
+        if (!FishItems.isCaptureBucket(item) && item.getType() != Material.WATER_BUCKET) {
             return;
         }
         event.setCancelled(true);
-        Fish caught = catchFish(entity);
-        var leftovers = player.getInventory().addItem(FishItems.bucketFor(caught));
-        if (!leftovers.isEmpty()) {
-            player.sendMessage(Component.text("インベントリに空きがありません。", NamedTextColor.RED));
-            return;
-        }
-        player.playSound(player.getLocation(), Sound.ITEM_BUCKET_FILL_FISH, 1.0f, 1.0f);
-        player.sendMessage(Component.text()
-                .append(Component.text("捕まえた！ ", NamedTextColor.GREEN))
-                .append(FishItems.name(caught))
-                .build());
-        motion.untrack(entity);
-        entity.remove();
+        catchAndGive(player, hand, entity);
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -187,18 +175,24 @@ public final class CaptureListener implements Listener {
             return;
         }
         Player player = event.getPlayer();
-        if (!FishItems.isCaptureBucket(event.getOriginalBucket())) {
-            event.setCancelled(true);
-            player.sendMessage(Component.text("魚は専用の「捕獲バケツ」ですくってください。",
-                    NamedTextColor.YELLOW));
-            return;
-        }
         event.setCancelled(true);
+        catchAndGive(player, event.getHand(), entity);
+    }
+
+    private void catchAndGive(Player player, EquipmentSlot hand, Entity entity) {
         Fish caught = catchFish(entity);
-        var leftovers = player.getInventory().addItem(FishItems.bucketFor(caught));
-        if (!leftovers.isEmpty()) {
-            player.sendMessage(Component.text("インベントリに空きがありません。", NamedTextColor.RED));
-            return;
+        ItemStack bucket = FishItems.bucketFor(caught);
+        EquipmentSlot slot = hand == null ? EquipmentSlot.HAND : hand;
+        ItemStack held = player.getInventory().getItem(slot);
+        if (held != null && held.getAmount() > 1) {
+            held.setAmount(held.getAmount() - 1);
+            var leftovers = player.getInventory().addItem(bucket);
+            if (!leftovers.isEmpty()) {
+                player.sendMessage(Component.text("インベントリに空きがありません。", NamedTextColor.RED));
+                return;
+            }
+        } else {
+            player.getInventory().setItem(slot, bucket);
         }
         player.playSound(player.getLocation(), Sound.ITEM_BUCKET_FILL_FISH, 1.0f, 1.0f);
         player.sendMessage(Component.text()
