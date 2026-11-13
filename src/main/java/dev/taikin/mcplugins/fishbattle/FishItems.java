@@ -27,8 +27,14 @@ public final class FishItems {
             meta.lore(List.of(
                     line("魚やウーパールーパーを右クリックですくう", NamedTextColor.GRAY),
                     line("バトル用の個体になる", NamedTextColor.GRAY)));
+            addGlint(meta);
         });
         return item;
+    }
+
+    public static void addGlint(ItemMeta meta) {
+        meta.setEnchantmentGlintOverride(true);
+        meta.addItemFlags(org.bukkit.inventory.ItemFlag.HIDE_ENCHANTS);
     }
 
     public static boolean isCaptureBucket(ItemStack item) {
@@ -105,6 +111,7 @@ public final class FishItems {
             }
             meta.customName(name(fish));
             meta.lore(lore(fish));
+            addGlint(meta);
         });
     }
 
