@@ -13,6 +13,7 @@ public record FishSpecies(String key, String name, int hp, int power, int techni
         REGISTRY.put("cod", new FishSpecies("cod", "タラ", 60, 45, 40));
         REGISTRY.put("salmon", new FishSpecies("salmon", "サケ", 55, 60, 55));
         REGISTRY.put("pufferfish", new FishSpecies("pufferfish", "フグ", 65, 55, 30));
+        REGISTRY.put("tadpole", new FishSpecies("tadpole", "オタマジャクシ", 45, 40, 65));
 
         pattern(TropicalFish.Pattern.KOB, "コブダイ", 55, 50, 40);
         pattern(TropicalFish.Pattern.SUNSTREAK, "スジモヨウ", 45, 55, 60);
@@ -70,6 +71,7 @@ public record FishSpecies(String key, String name, int hp, int power, int techni
             case "cod" -> FishType.BLUE;
             case "salmon" -> FishType.RED;
             case "pufferfish" -> FishType.YELLOW;
+            case "tadpole" -> FishType.BLUE;
             default -> FishType.BLUE;
         };
     }

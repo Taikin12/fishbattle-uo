@@ -59,7 +59,8 @@ public final class FishItems {
                 || material == Material.AXOLOTL_BUCKET
                 || material == Material.COD_BUCKET
                 || material == Material.SALMON_BUCKET
-                || material == Material.PUFFERFISH_BUCKET;
+                || material == Material.PUFFERFISH_BUCKET
+                || material == Material.TADPOLE_BUCKET;
     }
 
     public static Fish read(ItemStack item) {
@@ -131,7 +132,7 @@ public final class FishItems {
                     FishSpecies.keyOf(TropicalFish.Pattern.SUNSTREAK),
                     FishSpecies.keyOf(TropicalFish.Pattern.DASHER),
                     FishSpecies.keyOf(Axolotl.Variant.GOLD)};
-            case BLUE -> new String[] {"cod",
+            case BLUE -> new String[] {"cod", "tadpole",
                     FishSpecies.keyOf(TropicalFish.Pattern.FLOPPER),
                     FishSpecies.keyOf(TropicalFish.Pattern.STRIPEY),
                     FishSpecies.keyOf(Axolotl.Variant.BLUE)};
@@ -176,6 +177,9 @@ public final class FishItems {
         }
         if (speciesKey.equals("pufferfish")) {
             return new ItemStack(Material.PUFFERFISH_BUCKET);
+        }
+        if (speciesKey.equals("tadpole")) {
+            return new ItemStack(Material.TADPOLE_BUCKET);
         }
         if (speciesKey.startsWith("axolotl:")) {
             Axolotl.Variant variant = Axolotl.Variant.valueOf(speciesKey.substring("axolotl:".length()));

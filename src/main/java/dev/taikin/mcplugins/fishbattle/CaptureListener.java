@@ -14,6 +14,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.PufferFish;
 import org.bukkit.entity.Salmon;
+import org.bukkit.entity.Tadpole;
 import org.bukkit.entity.TropicalFish;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -304,6 +305,9 @@ public final class CaptureListener implements Listener {
         if (key.equals("pufferfish")) {
             return world.spawn(location, PufferFish.class, CreatureSpawnEvent.SpawnReason.CUSTOM);
         }
+        if (key.equals("tadpole")) {
+            return world.spawn(location, Tadpole.class, CreatureSpawnEvent.SpawnReason.CUSTOM);
+        }
         if (key.startsWith("axolotl:")) {
             Axolotl.Variant variant = Axolotl.Variant.valueOf(key.substring("axolotl:".length()));
             return world.spawn(location, Axolotl.class, CreatureSpawnEvent.SpawnReason.CUSTOM, axolotl -> {
@@ -349,7 +353,8 @@ public final class CaptureListener implements Listener {
                 || entity instanceof Axolotl
                 || entity instanceof Cod
                 || entity instanceof Salmon
-                || entity instanceof PufferFish;
+                || entity instanceof PufferFish
+                || entity instanceof Tadpole;
     }
 
     private Fish catchFish(Entity entity) {
@@ -371,6 +376,9 @@ public final class CaptureListener implements Listener {
         } else if (entity instanceof Salmon) {
             speciesKey = "salmon";
             type = FishType.RED;
+        } else if (entity instanceof Tadpole) {
+            speciesKey = "tadpole";
+            type = FishType.BLUE;
         } else {
             speciesKey = "pufferfish";
             type = FishType.YELLOW;
