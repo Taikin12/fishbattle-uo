@@ -155,8 +155,6 @@ public final class FishItems {
                 line("HP: " + fish.hp() + " / " + fish.maxHp(), NamedTextColor.RED),
                 line("強さ " + fish.power() + "  体力 " + fish.maxHp() + "  テクニック " + fish.technique(),
                         NamedTextColor.GRAY),
-                line("必殺技: " + fish.species().special(), NamedTextColor.LIGHT_PURPLE),
-                line("超必殺技: " + fish.species().superSpecial(), NamedTextColor.DARK_PURPLE),
                 line("技: " + techniqueSummary(fish), NamedTextColor.AQUA),
                 line("Lv" + fish.level() + " / つぎまで "
                         + Math.max(0, fish.nextExp() - fish.exp()) + " EXP", NamedTextColor.AQUA));

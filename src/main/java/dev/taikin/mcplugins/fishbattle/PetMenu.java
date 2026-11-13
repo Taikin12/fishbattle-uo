@@ -26,8 +26,6 @@ public final class PetMenu {
     public static final int SLOT_TYPE = 14;
     public static final int SLOT_RENAME = 15;
     public static final int SLOT_FOLLOW = 16;
-    public static final int SLOT_SPECIAL = 19;
-    public static final int SLOT_SUPER = 20;
     public static final int SLOT_TECH1 = 21;
     public static final int SLOT_TECH2 = 22;
     public static final int SLOT_TECH3 = 23;
@@ -88,12 +86,6 @@ public final class PetMenu {
                 NamedTextColor.GREEN, "HPの高さ（現在 " + fish.hp() + "/" + fish.maxHp() + "）"));
         inventory.setItem(SLOT_TECHNIQUE, statItem(Material.FEATHER, "テクニック", fish.technique(),
                 NamedTextColor.AQUA, "気合の溜まりやすさ"));
-        inventory.setItem(SLOT_SPECIAL, moveItem(Material.BLAZE_POWDER, "必殺技",
-                fish.species().special(), NamedTextColor.LIGHT_PURPLE,
-                "気合80%以上でじゃんけんに勝つと発動（威力 x1.6）"));
-        inventory.setItem(SLOT_SUPER, moveItem(Material.NETHER_STAR, "超必殺技",
-                fish.species().superSpecial(), NamedTextColor.DARK_PURPLE,
-                "気合80%以上で2ラウンド連続勝つと発動（威力 x2.4）"));
         inventory.setItem(SLOT_TYPE, typeItem(fish));
         inventory.setItem(SLOT_RENAME, actionItem(Material.NAME_TAG, "名前を変える",
                 NamedTextColor.GREEN, List.of("チャットに新しい名前を入力")));
@@ -142,16 +134,6 @@ public final class PetMenu {
         ItemStack item = new ItemStack(material);
         item.editMeta(meta -> {
             meta.customName(Component.text(name + ": " + value, color)
-                    .decoration(TextDecoration.ITALIC, false));
-            meta.lore(List.of(line(hint, NamedTextColor.GRAY)));
-        });
-        return item;
-    }
-
-    private ItemStack moveItem(Material material, String kind, String name, NamedTextColor color, String hint) {
-        ItemStack item = new ItemStack(material);
-        item.editMeta(meta -> {
-            meta.customName(Component.text(kind + ": " + name, color)
                     .decoration(TextDecoration.ITALIC, false));
             meta.lore(List.of(line(hint, NamedTextColor.GRAY)));
         });

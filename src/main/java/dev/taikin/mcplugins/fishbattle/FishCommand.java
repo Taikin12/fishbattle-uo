@@ -156,8 +156,6 @@ public final class FishCommand {
         FishType type = fish.type();
         player.sendMessage(Component.text("属性: " + type.label() + "（" + type.beats().label()
                 + " に強い）", NamedTextColor.GRAY));
-        player.sendMessage(Component.text("必殺技: " + fish.species().special()
-                + " / 超必殺技: " + fish.species().superSpecial(), NamedTextColor.LIGHT_PURPLE));
         return 1;
     }
 

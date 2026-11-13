@@ -125,7 +125,7 @@ final class BattleEffects {
     }
 
     void attack(BattleSession session, UUID attackerId, UUID defenderId, Entity target,
-            double multiplier, boolean special, boolean superSpecial) {
+            double multiplier) {
         if (target == null) {
             return;
         }
@@ -135,21 +135,10 @@ final class BattleEffects {
             return;
         }
 
-        int count = superSpecial ? 60 : special ? 40 : 20;
-        Particle particle = superSpecial ? Particle.TOTEM_OF_UNDYING
-                : special ? Particle.EXPLOSION_EMITTER
-                : multiplier > 1.0 ? Particle.CRIT : Particle.DAMAGE_INDICATOR;
-        world.spawnParticle(particle, location, count, 0.6, 0.6, 0.6, 0.15);
+        Particle particle = multiplier > 1.0 ? Particle.CRIT : Particle.DAMAGE_INDICATOR;
+        world.spawnParticle(particle, location, 20, 0.6, 0.6, 0.6, 0.15);
         world.spawnParticle(Particle.SWEEP_ATTACK, location, 3, 0.8, 0.5, 0.8, 0.0);
-
-        if (superSpecial) {
-            world.strikeLightningEffect(location);
-            world.playSound(location, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1.0f, 1.0f);
-        } else if (special) {
-            world.playSound(location, Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.2f);
-        } else {
-            world.playSound(location, Sound.ENTITY_PLAYER_ATTACK_SWEEP, 1.0f, 1.1f);
-        }
+        world.playSound(location, Sound.ENTITY_PLAYER_ATTACK_SWEEP, 1.0f, 1.1f);
 
         Player attacker = Bukkit.getPlayer(attackerId);
         if (attacker != null) {

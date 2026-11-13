@@ -869,23 +869,10 @@ public final class BattleManager {
         Fish target = session.fishOf(defenderId);
         double multiplier = attacker.type().multiplier(target.type());
 
-        int streak = attackerCharge >= 0.80 ? session.specialStreak(attackerId) + 1 : 0;
-        session.setSpecialStreak(attackerId, streak);
-        String specialName = null;
-        double specialBonus = 1.0;
-        if (streak >= 2) {
-            specialName = attacker.species().superSpecial();
-            specialBonus = 2.4;
-            session.setSpecialStreak(attackerId, 0);
-        } else if (streak == 1) {
-            specialName = attacker.species().special();
-            specialBonus = 1.6;
-        }
-
         Technique technique = DamageCalc.bestTechnique(attacker);
         double techniqueBonus = technique != null ? technique.bonus() : 1.0;
         int damage = (int) Math.max(1, Math.round(DamageCalc.damage(attacker, target, attackerCharge, defenderCharge,
-                multiplier * specialBonus * techniqueBonus) * clashScale));
+                multiplier * techniqueBonus) * clashScale));
 
         Fish damaged = target.withHp(target.hp() - damage);
         session.setFish(defenderId, damaged);
@@ -895,20 +882,6 @@ public final class BattleManager {
 
         if (technique != null) {
             broadcast(session, Component.text("わざ「" + technique.name() + "」！", technique.color()));
-        }
-        if (specialName != null) {
-            boolean isSuper = specialBonus >= 2.0;
-            broadcast(session, Component.text()
-                    .append(Component.text(isSuper ? "★超必殺技★ " : "☆必殺技☆ ",
-                            isSuper ? NamedTextColor.DARK_PURPLE : NamedTextColor.LIGHT_PURPLE))
-                    .append(Component.text(attacker.displayName() + " の " + specialName + "！",
-                            isSuper ? NamedTextColor.DARK_PURPLE : NamedTextColor.LIGHT_PURPLE))
-                    .build());
-            Player attackerVoice = Bukkit.getPlayer(attackerId);
-            if (attackerVoice != null) {
-                attackerVoice.playSound(attackerVoice.getLocation(),
-                        isSuper ? Sound.ENTITY_ENDER_DRAGON_GROWL : Sound.ENTITY_RAVAGER_ROAR, 1.0f, 1.0f);
-            }
         }
         Component hit = Component.text()
                 .append(Component.text(attacker.displayName() + " の攻撃！ ", NamedTextColor.WHITE))
@@ -930,8 +903,7 @@ public final class BattleManager {
         effects.duelTitle(Bukkit.getPlayer(attackerId), attackTitle, attackSub);
         effects.duelTitle(Bukkit.getPlayer(defenderId),
                 Component.text(damage + " ダメージ", NamedTextColor.RED), attackSub);
-        effects.attack(session, attackerId, defenderId, pets.petEntity(session, defenderId),
-                multiplier, specialName != null, specialBonus >= 2.0);
+        effects.attack(session, attackerId, defenderId, pets.petEntity(session, defenderId), multiplier);
         if (defender != null) {
             defender.playSound(defender.getLocation(), Sound.ENTITY_PLAYER_HURT, 0.8f, 1.2f);
         }

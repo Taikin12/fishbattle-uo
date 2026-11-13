@@ -58,8 +58,6 @@ public final class BattleSession {
     private org.bukkit.Location center;
     private double stake;
     private int round = 1;
-    private int specialStreakA;
-    private int specialStreakB;
 
     public BattleSession(UUID a, UUID b, Fish fishA, Fish fishB) {
         this.a = a;
@@ -386,18 +384,6 @@ public final class BattleSession {
 
     public void setMeterTask(BukkitTask task) {
         this.meterTask = task;
-    }
-
-    public int specialStreak(UUID player) {
-        return player.equals(a) ? specialStreakA : specialStreakB;
-    }
-
-    public void setSpecialStreak(UUID player, int value) {
-        if (player.equals(a)) {
-            specialStreakA = value;
-        } else {
-            specialStreakB = value;
-        }
     }
 
     public int round() {
