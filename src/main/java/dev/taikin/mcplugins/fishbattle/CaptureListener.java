@@ -161,7 +161,7 @@ public final class CaptureListener implements Listener {
                 return;
             }
         }
-        if (!FishItems.isCaptureBucket(item) && item.getType() != Material.WATER_BUCKET) {
+        if (!FishItems.isCaptureBucket(item)) {
             return;
         }
         event.setCancelled(true);
@@ -175,6 +175,9 @@ public final class CaptureListener implements Listener {
             return;
         }
         Player player = event.getPlayer();
+        if (!FishItems.isCaptureBucket(event.getOriginalBucket())) {
+            return;
+        }
         event.setCancelled(true);
         catchAndGive(player, event.getHand(), entity);
     }
