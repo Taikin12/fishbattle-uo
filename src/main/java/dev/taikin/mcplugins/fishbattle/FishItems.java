@@ -137,6 +137,11 @@ public final class FishItems {
     }
 
     public static Component name(Fish fish) {
+        return Component.text(fish.displayName(), NamedTextColor.WHITE)
+                .decoration(TextDecoration.ITALIC, false);
+    }
+
+    public static Component battleName(Fish fish) {
         return Component.text()
                 .append(Component.text("[" + fish.type().emoji() + "]", fish.type().color()))
                 .append(Component.text(fish.displayName(), NamedTextColor.WHITE))

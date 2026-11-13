@@ -211,6 +211,7 @@ public final class BattleManager {
 
         pets.freeze(session, from.getUniqueId(), petA);
         pets.freeze(session, to.getUniqueId(), petB);
+        pets.showBattleNames(session);
         var fA = from.getLocation();
         var fB = to.getLocation();
         var toB = fB.toVector().subtract(fA.toVector()).setY(0);
@@ -293,6 +294,7 @@ public final class BattleManager {
             motion.place(npcFishEntity, npcFishEntity.getLocation());
             session.setNpcPetId(npcFishEntity.getUniqueId());
         }
+        pets.showBattleNames(session);
 
         var villager = player.getWorld().spawn(spawnAt, Villager.class,
                 CreatureSpawnEvent.SpawnReason.CUSTOM, v -> {
@@ -1050,6 +1052,7 @@ public final class BattleManager {
                 npcPet.remove();
             }
         }
+        pets.hideBattleNames(session);
         pets.restore(session, session.playerA());
         pets.restore(session, session.playerB());
     }

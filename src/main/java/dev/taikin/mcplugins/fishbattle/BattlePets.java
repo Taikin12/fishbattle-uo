@@ -50,6 +50,36 @@ final class BattlePets {
         }
     }
 
+    void showBattleNames(BattleSession session) {
+        setNames(session, true);
+    }
+
+    void hideBattleNames(BattleSession session) {
+        setNames(session, false);
+    }
+
+    private void setNames(BattleSession session, boolean battle) {
+        java.util.List<Entity> pets = new java.util.ArrayList<>();
+        for (UUID playerId : new UUID[] {session.playerA(), session.playerB()}) {
+            Entity pet = entityById(session.petOf(playerId));
+            if (pet != null) {
+                pets.add(pet);
+            }
+        }
+        Entity npcPet = entityById(session.npcPetId());
+        if (npcPet != null) {
+            pets.add(npcPet);
+        }
+        for (Entity pet : pets) {
+            Fish fish = FishData.read(pet);
+            if (fish == null) {
+                continue;
+            }
+            pet.customName(battle ? FishItems.battleName(fish) : FishItems.name(fish));
+            pet.setCustomNameVisible(true);
+        }
+    }
+
     void faceEachOther(BattleSession session) {
         Entity petA = entityById(session.petOf(session.playerA()));
         Entity petB = entityById(session.petOf(session.playerB()));
