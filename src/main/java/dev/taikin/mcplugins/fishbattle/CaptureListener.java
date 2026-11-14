@@ -258,6 +258,12 @@ public final class CaptureListener implements Listener {
             return;
         }
         if (action == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock() != null
+                && FishItems.isCaptureBucket(event.getItem())
+                && event.getClickedBlock().isLiquid()) {
+            event.setCancelled(true);
+            return;
+        }
+        if (action == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock() != null
                 && event.getClickedBlock().getState() instanceof Container) {
             return;
         }
