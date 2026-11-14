@@ -83,6 +83,14 @@ public final class CaptureListener implements Listener {
         }
     }
 
+    @EventHandler(ignoreCancelled = true)
+    public void onTransform(org.bukkit.event.entity.EntityTransformEvent event) {
+        if (event.getTransformReason() == org.bukkit.event.entity.EntityTransformEvent.TransformReason.METAMORPHOSIS
+                && FishMotion.hasData(event.getEntity())) {
+            event.setCancelled(true);
+        }
+    }
+
     private void collectFromPunch(Player player, Entity entity) {
         if (battles != null && battles.inBattle(player.getUniqueId())) {
             return;

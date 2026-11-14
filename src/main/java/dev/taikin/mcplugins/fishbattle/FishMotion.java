@@ -10,6 +10,7 @@ import org.bukkit.entity.Axolotl;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Tadpole;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -250,6 +251,9 @@ public final class FishMotion {
         }
         if (entity instanceof Axolotl axolotl) {
             axolotl.setPlayingDead(false);
+        }
+        if (entity instanceof Tadpole tadpole) {
+            tadpole.setAgeLock(true);
         }
     }
 
