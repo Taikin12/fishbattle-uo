@@ -220,30 +220,24 @@ public final class CaptureListener implements Listener {
 
     @EventHandler(priority = org.bukkit.event.EventPriority.LOWEST)
     public void onBucketFill(PlayerBucketFillEvent event) {
-        if (FishItems.isFish(event.getItemStack())) {
+        EquipmentSlot hand = event.getHand();
+        ItemStack held = event.getPlayer().getInventory().getItem(hand);
+        if (FishItems.isFish(held)) {
             event.setCancelled(true);
             return;
         }
-        if (!FishItems.isCaptureBucket(event.getItemStack())) {
+        if (!FishItems.isCaptureBucket(held)) {
             return;
         }
         event.setCancelled(true);
-        Player player = event.getPlayer();
-        EquipmentSlot hand = event.getHand() == null ? EquipmentSlot.HAND : event.getHand();
-        ItemStack held = player.getInventory().getItem(hand);
-        ItemStack keep = held != null ? held.clone() : FishItems.captureBucket();
-        org.bukkit.Bukkit.getScheduler().runTask(plugin, () -> {
-            player.getInventory().setItem(hand, keep);
-            player.updateInventory();
-        });
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onBucketEmpty(PlayerBucketEmptyEvent event) {
-        if (FishItems.isCaptureBucket(event.getItemStack())
-                || FishItems.read(event.getItemStack()) != null) {
+        ItemStack held = event.getPlayer().getInventory().getItem(event.getHand());
+        if (FishItems.isCaptureBucket(held) || FishItems.read(held) != null) {
             event.setCancelled(true);
-            if (FishItems.isCaptureBucket(event.getItemStack())) {
+            if (FishItems.isCaptureBucket(held)) {
                 event.getPlayer().sendMessage(Component.text("捕獲バケツは水をまけません。魚に使いましょう。",
                         NamedTextColor.YELLOW));
             }
