@@ -24,7 +24,7 @@ public final class FishBattlePlugin extends JavaPlugin {
         motion.trackLoaded();
         PetMenu menu = new PetMenu(motion);
 
-        CaptureListener capture = new CaptureListener(motion, menu);
+        CaptureListener capture = new CaptureListener(this, motion, menu);
         capture.setBattles(battles);
         getServer().getPluginManager().registerEvents(capture, this);
         getServer().getPluginManager().registerEvents(new BattleListener(battles, motion), this);

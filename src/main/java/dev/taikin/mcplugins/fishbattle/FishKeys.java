@@ -20,6 +20,7 @@ public final class FishKeys {
     public static NamespacedKey FOLLOW;
     public static NamespacedKey TECHNIQUES;
     public static NamespacedKey DEMO;
+    public static NamespacedKey CAUGHT;
 
     private FishKeys() {
     }
@@ -40,5 +41,6 @@ public final class FishKeys {
         FOLLOW = new NamespacedKey(plugin, "follow");
         TECHNIQUES = new NamespacedKey(plugin, "techniques");
         DEMO = new NamespacedKey(plugin, "demo");
+        CAUGHT = new NamespacedKey(plugin, "caught");
     }
 }

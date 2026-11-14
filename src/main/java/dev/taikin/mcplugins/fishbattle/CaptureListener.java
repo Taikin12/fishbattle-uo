@@ -34,11 +34,13 @@ import org.bukkit.util.Vector;
 
 public final class CaptureListener implements Listener {
 
+    private final org.bukkit.plugin.Plugin plugin;
     private final FishMotion motion;
     private final PetMenu menu;
     private BattleManager battles;
 
-    public CaptureListener(FishMotion motion, PetMenu menu) {
+    public CaptureListener(org.bukkit.plugin.Plugin plugin, FishMotion motion, PetMenu menu) {
+        this.plugin = plugin;
         this.motion = motion;
         this.menu = menu;
     }
@@ -184,6 +186,10 @@ public final class CaptureListener implements Listener {
     }
 
     private void catchAndGive(Player player, EquipmentSlot hand, Entity entity) {
+        if (entity.getPersistentDataContainer().has(FishKeys.CAUGHT, PersistentDataType.BYTE)) {
+            return;
+        }
+        entity.getPersistentDataContainer().set(FishKeys.CAUGHT, PersistentDataType.BYTE, (byte) 1);
         Fish caught = catchFish(entity);
         ItemStack bucket = FishItems.bucketFor(caught);
         EquipmentSlot slot = hand == null ? EquipmentSlot.HAND : hand;
@@ -205,6 +211,11 @@ public final class CaptureListener implements Listener {
                 .build());
         motion.untrack(entity);
         entity.remove();
+        org.bukkit.Bukkit.getScheduler().runTask(plugin, () -> {
+            if (entity.isValid()) {
+                entity.remove();
+            }
+        });
     }
 
     @EventHandler(ignoreCancelled = true)
