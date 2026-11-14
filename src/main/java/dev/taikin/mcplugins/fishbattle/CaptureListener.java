@@ -218,15 +218,22 @@ public final class CaptureListener implements Listener {
         });
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(priority = org.bukkit.event.EventPriority.LOWEST, ignoreCancelled = true)
     public void onBucketFill(PlayerBucketFillEvent event) {
-        if (FishItems.isFish(event.getItemStack())) {
-            event.setCancelled(true);
+        boolean fish = FishItems.isFish(event.getItemStack());
+        if (!fish && !FishItems.isCaptureBucket(event.getItemStack())) {
             return;
         }
-        if (FishItems.isCaptureBucket(event.getItemStack())) {
-            event.setCancelled(true);
+        event.setCancelled(true);
+        if (fish) {
+            return;
         }
+        Player player = event.getPlayer();
+        EquipmentSlot hand = event.getHand() == null ? EquipmentSlot.HAND : event.getHand();
+        ItemStack held = player.getInventory().getItem(hand);
+        ItemStack restore = held == null ? FishItems.captureBucket() : held.clone();
+        org.bukkit.Bukkit.getScheduler().runTask(plugin,
+                () -> player.getInventory().setItem(hand, restore));
     }
 
     @EventHandler(ignoreCancelled = true)
