@@ -263,6 +263,7 @@ public final class CaptureListener implements Listener {
                 && FishItems.isCaptureBucket(event.getItem())
                 && event.getClickedBlock().isLiquid()) {
             event.setCancelled(true);
+            event.setUseItemInHand(org.bukkit.event.Event.Result.DENY);
             return;
         }
         if (action == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock() != null
