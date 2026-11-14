@@ -220,8 +220,11 @@ public final class CaptureListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onBucketFill(PlayerBucketFillEvent event) {
-        if (FishItems.isCaptureBucket(event.getItemStack())
-                || FishItems.isFish(event.getItemStack())) {
+        if (FishItems.isFish(event.getItemStack())) {
+            event.setCancelled(true);
+            return;
+        }
+        if (FishItems.isCaptureBucket(event.getItemStack())) {
             event.setCancelled(true);
         }
     }
